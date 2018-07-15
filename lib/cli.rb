@@ -15,10 +15,12 @@ class Cli
     size_array = input.split(/,|\s/)
 
     size_array.map!(&:to_i) if /\d/
-    if size_array.size != 2 && !all_integers(size_array)
+    if !size_array.all? { |i| i > 0 }
+    # if size_array.size != 2 && !all_integers(size_array)
       puts "Wrong arguments"
       return create_map
     end
+
     puts "x-axis size = #{size_array[0]} and y-axis size = #{size_array[1]} [y/n]?"
 
     # User can redo the input if they did the wrong format
@@ -33,22 +35,40 @@ class Cli
     input = gets.chomp
     rover_attr = input.split(/,|\s/)
 
+    ## Checks that there are 3 arguments else reruns code
     if rover_attr.size != 3
-      puts "Wrong number of arguments"
+      puts "Bad input"
       return create_rover
     end
-    dir = /n|s|e|w/i.match('k').to_s if !!/n|s|e|w/i.match(rover_attr.last)
-    rover_attr.pop
-    rover_attr.map!(&:to_i) if rover_attr.all
+    binding.pry
+    ## Checks that input is ok for the direction and reruns method elsewise
+    if !!/n|s|e|w/i.match(rover_attr.last)
+      dir = /n|s|e|w/i.match('k').to_s
+      rover_attr.pop
+    else
+      puts "Bad input try again"
+      return create_rover
+    end
+    binding.pry
+    ## Checks that the axis inputs are integers and reruns code elsewise
+    # if rover_attr.all?{ |i| /\d/.match(i) }
+    #   rover_attr.map!(&:to_i)
 
-    Rover.new(rover_attr[0].to_i, rover_attr[1].to_i, rover_attr[2])
+      rover_attr.map!(&:to_i) if /\d/
+      if !rover_attr.all? { |i| i > 0 }
+    else
+      puts "Bad input try again"
+      return create_rover
+    end
+
+    Rover.new(rover_attr[0], rover_attr[1], dir)
   end
 
   def get_movement
     puts "Enter string for how you would like the rover to move:"
 
     input = gets.chomp
-    movement = input.chars
+    movement = input.split("")
     binding.pry
 
   end
@@ -57,6 +77,7 @@ class Cli
     array.all? {|i| i.is_a?(Integer) }
   end
 
+# returns boolean if user likes input or reruns code
   def input_ok?
     puts "Input ok?"
     input = gets.chomp
