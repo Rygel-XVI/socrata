@@ -17,7 +17,7 @@ class Socrata::Cli
     size_array = input.split(/,|\s/)
 
     size_array.map!(&:to_i)
-    if !size_array.all? { |i| i > 0 } || size_array.size != 2
+    if !array_has_zero?(size_array) || size_array.size != 2
       puts "Wrong arguments"
       create_map
     end
@@ -47,7 +47,8 @@ class Socrata::Cli
       puts "Bad Input"
       create_rover
     end
-    if !rover_attr.all? { |i| i > 0 }
+
+    if !array_has_zero?(rover_attr)
       puts "Bad Input"
       create_rover
     end
@@ -110,6 +111,10 @@ class Socrata::Cli
 
   def quit?(input)
     /quit/i.match(input)
+  end
+
+  def array_has_zero?(array)
+    array.all? { |i| i > 0 }
   end
 
   def initial_direction_valid?(rover_attr)
