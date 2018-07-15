@@ -11,7 +11,7 @@ class Socrata::Cli
 # creates a map of a certain size
   def create_map
     puts "Enter size of map (x, y) or (x y):"
-    input = gets.chomp
+    input = gets.strip
 
     abort if quit?(input)
     size_array = input.split(/,|\s/)
@@ -19,91 +19,106 @@ class Socrata::Cli
     size_array.map!(&:to_i)
     if !size_array.all? { |i| i > 0 } || size_array.size != 2
       puts "Wrong arguments"
-      return create_map
+      create_map
     end
 
-    puts "x-axis size = #{size_array[0]} and y-axis size = #{size_array[1]} [y/n]?"
+#########removed challenge doesn't have this line of input =)
+    # puts "x-axis size = #{size_array[0]} and y-axis size = #{size_array[1]} [y/n]?"
 
     # User can redo the input if they did the wrong format
-    puts "Input ok?"
-    create_map if !input_ok?
+    # puts "Input ok?"
+    # create_map if !input_ok?
 
-    Map.new(size_array[0], size_array[1])
+    Socrata::Map.new(size_array[0], size_array[1])
   end
 
   def create_rover
     puts "Enter starting points and direction of a Rover (x, y, [n,s,e,w]) or (x y [n,s,e,w]):"
 
-    input = gets.chomp
+    input = gets.strip
     abort if quit?(input)
     rover_attr = input.split(/,|\s/)
 
-    ## Checks that there are 3 arguments else reruns code
-    if rover_attr.size != 3
-      puts "Bad input"
-      return create_rover
-    end
-
-    ## Checks that input is ok for the direction and reruns method elsewise
-    if !!/n|s|e|w/i.match(rover_attr.last)
-      dir = /n|s|e|w/i.match(rover_attr.last).to_s
+    if rover_attr.size == 3 && initial_direction_valid?(rover_attr)
+      dir = rover_attr.last.to_s
       rover_attr.pop
+      rover_attr.map!(&:to_i)
     else
-      puts "Bad input try again"
-      return create_rover
+      puts "Bad Input"
+      create_rover
     end
-
-    ## Checks that the axis inputs are integers and reruns code elsewise
-    rover_attr.map!(&:to_i)
     if !rover_attr.all? { |i| i > 0 }
-      puts "Bad input try again"
-      return create_rover
+      puts "Bad Input"
+      create_rover
     end
 
-    puts "Input ok?"
-    Rover.new(rover_attr[0], rover_attr[1], dir) if input_ok?
+    Socrata::Rover.new(rover_attr[0], rover_attr[1], dir)
+    puts "Made rover starting at x: #{rover_attr[0]}, y: #{rover_attr[0]}, pointing: #{dir}"
+    # Socrata::Rover.new(rover_attr[0], rover_attr[1], dir)
+
+
+#########removed challenge doesn't have this line of input =)
+    # puts "Input ok?"
+    # create_rover if !input_ok?
 
     #sets rover.map
-    Rover.all.last.map = Map.all.last
+    Socrata::Rover.all.last.map = Socrata::Map.all.last
     get_movement
   end
 
   def get_movement
     puts "Enter string for how you would like the rover to move (L, R, M):"
-    input = gets.chomp
+    input = gets.strip
     abort if quit?(input)
     input.downcase!
     move_array = input.split("")
     if !move_array.all? { |i| /L|M|R/i.match?(i) }
       puts "Bad input try again"
-      return get_movement
+      get_movement
     else
+#########removed challenge doesn't have this line of input =)
+      # !input_ok? ? move_rover(move_array) : get_movement
       move_rover(move_array)
     end
   end
 
 # Have to add selection of rover options and selection if this were a bigger program
   def move_rover(move_array)
-    Rover.all.last.move_me(move_array)
-    puts "Move another rover?"
-    create_rover if input_ok?
+    Socrata::Rover.all.last.move_me(move_array)
+#########removed challenge doesn't have this line of input =)
+    # puts "Move another rover?"
+    # create_rover if input_ok?
+    create_rover if Socrata::Rover.all.size < 2
+
     abort
   end
 
+
+#########removed challenge doesn't have this line of input =)
+
 # returns boolean if user likes input or reruns code
-  def input_ok?
-    input = gets.chomp
-    abort if quit?(input)
-    if /y|n/i.match(input)
-      /n/i.match(input) ? false : true
-    else
-      puts "Try again"
-      input_ok?
-    end
-  end
+  # def input_ok?(input)
+  #   # input = gets.strip
+  #   abort if quit?(input)
+  #   if /y|n/i.match(input)
+  #     /n/i.match(input) ? false : true
+  #   else
+  #     puts "Try again"
+  #     input_ok?
+  #   end
+  # end
 
   def quit?(input)
     /quit/i.match(input)
+  end
+
+  def initial_direction_valid?(rover_attr)
+    case rover_attr.last
+    when "n", "s", "e", "w"
+      true
+    else
+      false
+    end
   end
 
 end

@@ -88,8 +88,7 @@ class Socrata::Rover
 
 ## Checks if the rover is at the North or East edge of the map ##
   def at_axis_limit?(axis)
-    # binding.pry
-    /y/i.match?(axis) ? self.y == self.map.y : self.x == self.map.x
+    axis == 'y' ? self.y == self.map.y : self.x == self.map.x
   end
 
 ## Checks if the rover is pointed along the x or y axis and returns the axis ##
