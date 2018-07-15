@@ -4,6 +4,7 @@ class Socrata::Cli
 
 # Creates a map and then a rover
   def call
+    puts "Type quit at anytime to quit"
     create_map
     create_rover
   end
@@ -35,8 +36,8 @@ class Socrata::Cli
     abort if quit?(input)
     rover_attr = input.split(/,|\s/)
 
-# Checks that the input has the appropriate number of items and that the initial direction is valid.
-    if rover_attr.size == 3 && initial_direction_valid?(rover_attr) && all_integers?(rover_attr.first 2) && coord_within_map?(rover_attr.first 2)
+# Checks that the input has 3 arguemnts, the direction is valid, and tha corrdinates are valid
+    if rover_attr.size == 3 && initial_direction_valid?(rover_attr) && coordinates_valid?(rover_attr.first 2)
       dir = rover_attr.last
       rover_attr.pop
       rover_attr.map!(&:to_i)
@@ -45,11 +46,6 @@ class Socrata::Cli
       return create_rover
     end
 
-# Checks if the coordinates are on the map
-    # if !coord_within_map?(rover_attr.take 2)
-    #   puts "Bad Input"
-    #   return create_rover
-    # end
     Socrata::Rover.new(rover_attr[0], rover_attr[1], dir)
     puts "Made rover starting at x: #{rover_attr[0]}, y: #{rover_attr[0]}, pointing: #{dir}"
 
@@ -81,13 +77,17 @@ class Socrata::Cli
     /quit/i.match(input)
   end
 
-# Checks if a number in the array is zero. input should be array of integers
-  # def array_has_zero?(array)
-  #   array.all? { |i| i > 0 }
-  # end
-
   def greater_than_zero?(array)
     array.all? {|i| i > 0 }
+  end
+
+  def coordinates_valid?(array)
+    all_integers?(array)
+    coord_within_map?(array)
+  end
+
+  def all_integers?(array)
+    array.all?{|i| /\d/.match(i) }
   end
 
 # checks if the numbers in the array are on the map
@@ -110,11 +110,6 @@ class Socrata::Cli
       false
     end
   end
-
-  def all_integers?(array)
-    array.all?{|i| /\d/.match(i) }
-  end
-
 
   ###code if it were to be more dynamic to handle user input
 
