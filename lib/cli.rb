@@ -16,7 +16,6 @@ class Cli
 
     size_array.map!(&:to_i)
     if !size_array.all? { |i| i > 0 } || size_array.size != 2
-    # if size_array.size != 2 && !all_integers(size_array)
       puts "Wrong arguments"
       return create_map
     end
@@ -40,7 +39,7 @@ class Cli
       puts "Bad input"
       return create_rover
     end
-    binding.pry
+
     ## Checks that input is ok for the direction and reruns method elsewise
     if !!/n|s|e|w/i.match(rover_attr.last)
       dir = /n|s|e|w/i.match(rover_attr.last).to_s
@@ -49,11 +48,8 @@ class Cli
       puts "Bad input try again"
       return create_rover
     end
-    binding.pry
-    ## Checks that the axis inputs are integers and reruns code elsewise
-    # if rover_attr.all?{ |i| /\d/.match(i) }
-    #   rover_attr.map!(&:to_i)
 
+    ## Checks that the axis inputs are integers and reruns code elsewise
     rover_attr.map!(&:to_i)
     if !rover_attr.all? { |i| i > 0 }
       puts "Bad input try again"
@@ -65,15 +61,8 @@ class Cli
 
   def get_movement
     puts "Enter string for how you would like the rover to move:"
-
     input = gets.chomp
     movement = input.split("")
-    binding.pry
-
-  end
-
-  def all_integers?(array)
-    array.all? {|i| i.is_a?(Integer) }
   end
 
 # returns boolean if user likes input or reruns code
