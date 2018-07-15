@@ -17,41 +17,48 @@ class Socrata::Cli
     size_array = input.split(/,|\s/)
 
     size_array.map!(&:to_i)
-    if !array_has_zero?(size_array) || size_array.size != 2
+    if size_array.size == 2 && greater_than_zero?(size_array)
+      Socrata::Map.new(size_array[0], size_array[1])
+    else
       puts "Wrong arguments"
       create_map
     end
-
 #########removed challenge doesn't have this line of input =)
     # puts "x-axis size = #{size_array[0]} and y-axis size = #{size_array[1]} [y/n]?"
 
     # User can redo the input if they did the wrong format
     # puts "Input ok?"
     # create_map if !input_ok?
+  end
 
-    Socrata::Map.new(size_array[0], size_array[1])
+  def greater_than_zero?(array)
+    array.all? {|i| i > 0 }
   end
 
   def create_rover
     puts "Enter starting points and direction of a Rover (x, y, [n,s,e,w]) or (x y [n,s,e,w]):"
 
-    input = gets.strip
+    input = gets.strip.downcase
     abort if quit?(input)
     rover_attr = input.split(/,|\s/)
 
+# Checks that the input has the appropriate number of items and that the initial direction is valid.
     if rover_attr.size == 3 && initial_direction_valid?(rover_attr)
       dir = rover_attr.last.to_s
       rover_attr.pop
       rover_attr.map!(&:to_i)
     else
       puts "Bad Input"
-      create_rover
+      return create_rover
     end
 
-    if !array_has_zero?(rover_attr)
+# Checks if the coordinates are on the map
+    if !coord_within_map?(rover_attr)
       puts "Bad Input"
-      create_rover
+      return create_rover
     end
+
+    # !array_has_zero?(rover_attr) &&
 
     Socrata::Rover.new(rover_attr[0], rover_attr[1], dir)
     puts "Made rover starting at x: #{rover_attr[0]}, y: #{rover_attr[0]}, pointing: #{dir}"
@@ -62,16 +69,17 @@ class Socrata::Cli
     # puts "Input ok?"
     # create_rover if !input_ok?
 
-    #sets rover.map
+    #sets rover.map to the map just created
     Socrata::Rover.all.last.map = Socrata::Map.all.last
     get_movement
   end
 
+## Queries for string for movement pattern. sanitizes and then calles method to move rover
   def get_movement
     puts "Enter string for how you would like the rover to move (L, R, M):"
-    input = gets.strip
+    input = gets.strip.downcase
     abort if quit?(input)
-    input.downcase!
+    # input.downcase!
     move_array = input.split("")
     if !move_array.all? { |i| /L|M|R/i.match?(i) }
       puts "Bad input try again"
@@ -113,10 +121,22 @@ class Socrata::Cli
     /quit/i.match(input)
   end
 
+# Checks if a number in the array is zero. input should be array of integers
   def array_has_zero?(array)
     array.all? { |i| i > 0 }
   end
 
+# checks if the numbers in the array are on the map
+  def coord_within_map?(array)
+    map = Socrata::Map.all.last
+    if array.first <= map.x && array.first >= 0 && array.last <= map.y && array.last >= 0
+      true
+    else
+      false
+    end
+  end
+
+# checks that the initial direction given is an actualy direction
   def initial_direction_valid?(rover_attr)
     case rover_attr.last
     when "n", "s", "e", "w"

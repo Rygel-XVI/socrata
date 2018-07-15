@@ -25,7 +25,7 @@ class Socrata::Rover
   end
 
   def move_me(move_array)
-    case move_array.last
+    case move_array.first
     when 'l'
       spin('l')
     when 'r'
@@ -33,7 +33,7 @@ class Socrata::Rover
     when 'm'
       move
     end
-    move_array.pop
+    move_array.shift
     if move_array.size > 0
       move_me(move_array)
     else
