@@ -24,8 +24,25 @@ class Rover
     @@all << self
   end
 
+  def move_me(move_array)
+    case move_array.last
+    when 'l'
+      spin('l')
+    when 'r'
+      spin('r')
+    when 'm'
+      move
+    end
+    move_array.pop
+    if move_array.size > 0
+      move_me(move_array)
+    else
+      puts "Ending Coordinates X: #{self.x}, Y: #{self.y}, Pointing: #{self.direction}"
+    end
+  end
+
   def spin(dir)
-    dir.downcase == "l" ? spin_left : spin_right
+    dir == "l" ? spin_left : spin_right
   end
 
 ## These methods change the direction the rover is pointing
@@ -71,7 +88,8 @@ class Rover
 
 ## Checks if the rover is at the North or East edge of the map ##
   def at_axis_limit?(axis)
-    axis == 'y' ? self.y == self.map.y : self.x == self.map.x
+    # binding.pry
+    /y/i.match?(axis) ? self.y == self.map.y : self.x == self.map.x
   end
 
 ## Checks if the rover is pointed along the x or y axis and returns the axis ##
