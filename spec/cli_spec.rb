@@ -1,7 +1,7 @@
-RSpec.describe Cli do
+RSpec.describe Socrata::Cli do
 
 it "initializes with a map size" do
-  cli = Cli.new
+  cli = Socrata::Cli.new
   binding.pry
 end
 

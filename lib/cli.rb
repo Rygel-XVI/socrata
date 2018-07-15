@@ -1,6 +1,6 @@
 require 'pry'
 
-class Cli
+class Socrata::Cli
 
 # Creates a map and then a rover
   def call

@@ -1,4 +1,5 @@
-class Map
+
+class Socrata::Map
 
   attr_reader :x, :y
 

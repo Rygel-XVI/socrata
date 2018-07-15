@@ -1,4 +1,4 @@
-require "socrata/version"
+require_relative "socrata/version"
 require "./config/environment"
 
 module Socrata

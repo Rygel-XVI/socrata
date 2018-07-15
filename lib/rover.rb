@@ -1,5 +1,5 @@
 
-class Rover
+class Socrata::Rover
 
   attr_accessor :x, :y, :direction, :map
 
