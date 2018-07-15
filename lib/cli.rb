@@ -58,11 +58,8 @@ class Socrata::Cli
       return create_rover
     end
 
-    # !array_has_zero?(rover_attr) &&
-
     Socrata::Rover.new(rover_attr[0], rover_attr[1], dir)
     puts "Made rover starting at x: #{rover_attr[0]}, y: #{rover_attr[0]}, pointing: #{dir}"
-    # Socrata::Rover.new(rover_attr[0], rover_attr[1], dir)
 
 
 #########removed challenge doesn't have this line of input =)
