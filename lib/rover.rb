@@ -1,7 +1,7 @@
 
 class Socrata::Rover
 
-  attr_accessor :x, :y, :direction, :map
+  attr_accessor :x, :y, :direction, :map, :movement
 
   @@all = []
 
@@ -20,12 +20,18 @@ class Socrata::Rover
     @@all.clear
   end
 
+  def self.move
+    all.each do |r|
+      r.move_me
+    end
+  end
+
   def save
     @@all << self
   end
 
-  def move_me(move_array)
-    case move_array.first
+  def move_me
+    case self.movement.first
     when 'l'
       spin('l')
     when 'r'
@@ -33,11 +39,11 @@ class Socrata::Rover
     when 'm'
       move
     end
-    move_array.shift
-    if move_array.size > 0
-      move_me(move_array)
+    self.movement.shift
+    if self.movement.size > 0
+      move_me
     else
-      puts "Ending Coordinates X: #{self.x}, Y: #{self.y}, Pointing: #{self.direction}"
+      puts "Ending Coordinates X: #{self.x}, Y: #{self.y}, Pointing: #{self.direction.upcase}"
     end
   end
 
