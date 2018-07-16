@@ -61,4 +61,23 @@ RSpec.describe Socrata::Rover do
     expect(rover3.x).to eq(0)
   end
 
+  it "moves utilizing move_me method and movement attribute and accomodates for going off map edge" do
+    rover = Socrata::Rover.new(1, 1, "n")
+    rover.map = Socrata::Map.new(3, 3)
+    rover.movement = ["l", "m", "m", "l", "r", "m"]
+
+    rover.move_me
+    expect(rover.x).to eq(0)
+    expect(rover.y).to eq(1)
+
+    rover1 = Socrata::Rover.new(0, 0, "n")
+    rover1.map = Socrata::Map.new(5, 5)
+    rover1.movement = ["m", "m", "m", "m", "m", "l", "r", "r", "m", "m"]
+
+    rover1.move_me
+    expect(rover1.x).to eq(2)
+    expect(rover1.y).to eq(5)
+
+  end
+
 end

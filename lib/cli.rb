@@ -65,11 +65,11 @@ class Socrata::Cli
     abort if quit?(input)
     move_array = input.split("")
 
-    if !move_array.all? { |i| /L|M|R/i.match?(i) }
+    if move_array.all? { |i| /L|M|R/i.match?(i) }
+      Socrata::Rover.all.last.movement = move_array
+    else
       puts "Bad input try again"
       get_movement
-    else
-      Socrata::Rover.all.last.movement = move_array
     end
   end
 
@@ -114,9 +114,9 @@ class Socrata::Cli
   ###code if it were to be more dynamic to handle user input
 
   # Have to add selection of rover options and selection if this were a bigger program
-  #   def move_rover(move_array)
-  #     Socrata::Rover.all.last.move_me(move_array)
+  #
   # #########removed challenge doesn't have this line of input =)
+  ### add if want to make it more flexible and do one rover then move
   #     # puts "Move another rover?"
   #     # create_rover if input_ok?
   #     create_rover if Socrata::Rover.all.size < 2
